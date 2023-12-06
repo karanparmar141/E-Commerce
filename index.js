@@ -1,0 +1,25 @@
+const express = require("express")
+const connect = require("./config/db")
+const UserRoute = require("./routes/user.routes")
+const app = express()
+const cookie = require("cookie-parser")
+const ProRoute = require("./routes/product.routes")
+const { auth } = require("./middleware/auth")
+app.use(cookie())
+app.use(express.json())
+app.use(express.urlencoded({extended : true}))
+require("dotenv").config()
+app.set("view engine", "ejs")
+app.set("viwes", __dirname + "/views")
+app.use(express.static(__dirname + "/public"))
+app.use("/user" , UserRoute)
+app.use("/product" , ProRoute)
+
+app.get("/" , auth , (req , res) =>{
+    res.render("index")
+})
+
+app.listen(process.env.PORT, ()=>{
+    connect()
+    console.log(`port is start ${process.env.PORT}`)
+})
