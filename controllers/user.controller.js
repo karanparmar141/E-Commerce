@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt")
 const UserModel = require("../models/user.modal")
 const jwt = require("jsonwebtoken")
+const nodemailer = require("nodemailer")
+const otpgenerator = require("otp-generator")
 
 
 const data = async(req , res) =>{
@@ -58,6 +60,8 @@ const login = async(req , res) =>{
     }
 
 }
+
+// otp 
 
 
 

@@ -5,37 +5,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        #product{
+            display: grid;
+            grid-template-columns: repeat(4 , 1fr);
+        }
+        #product div img{
+            width: 200px;
+            height: 200px;
+        }
+        #product div{
+            padding: 10px;
+        }
+    </style>
 </head>
 
 <body>
-    <form action="/product/create" method="post">
-        <input type="text" placeholder="title" name="title">
-        <input type="text" placeholder="description" name="des">
-        <input type="url" placeholder="image" name="img">
-        <input type="number" placeholder="price" name="price">
-        <input type="submit">
-    </form>
-    <div id="ui"></div>
+    <%- include("navbar") %>
+        <div id="product"></div>
 </body>
 <script>
-    fetch("/product/products")
-    .then((res) => res.json())
-    .then((data) =>{
-        data.map((ele) =>{
-            let img = document.createElement("img")
-            img.src = ele.img
-            img.setAttribute("width" , "200px")
-            let title = document.createElement("h1")
-            title.innerHTML = ele.title
-            let price = document.createElement("h4")
-            price.innerHTML = ele.price
-            let des = document.createElement("p")
-            des.innerHTML = ele.des
-            let div = document.createElement("div")
-            div.append(img , title , price , des)
-            document.getElementById("ui").append(div)
+    const cart = (id) =>{
+        fetch(`/product/cart`,{
+            method : "POST",
+            headers : {"Content-Type" : "application/json"},
+            body : JSON.stringify({productId : id})
         })
-    })
+    }
+
+    fetch("/product/allproduct")
+        .then((res) => res.json())
+        .then((data) => {
+            data.map((ele) => {
+                let img = document.createElement("img")
+                img.src = ele.img
+                let title = document.createElement("h2")
+                title.innerHTML = ele.title
+                let price = document.createElement("h3")
+                price.innerHTML = ele.price
+                let des = document.createElement("p")
+                des.innerHTML = ele.des
+                let btn = document.createElement("button")
+                btn.innerHTML = "Add to cart"
+                btn.addEventListener("click" , () => cart(ele._id))
+                let div = document.createElement("div")
+                div.append(img, title, price, des , btn)
+                document.getElementById("product").append(div)
+            })
+        })
+        .catch((err) => console.log(err))
 </script>
 
 </html>
